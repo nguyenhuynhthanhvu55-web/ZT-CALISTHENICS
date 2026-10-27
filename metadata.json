@@ -1,0 +1,8 @@
+{
+  "name": "ZT CALISTHENICS",
+  "description": "Ứng dụng theo dõi dinh dưỡng món Việt, tính calo theo cách chế biến và tập luyện Calisthenics tại nhà không cần dụng cụ.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
