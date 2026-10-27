@@ -1,0 +1,49 @@
+name: Build APK (ZK HEALTH)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Cài thư viện
+        run: npm install
+
+      - name: Build web
+        run: npm run build
+
+      - name: Tạo dự án Android (nếu chưa có)
+        run: |
+          if [ ! -d android ]; then npx cap add android; fi
+
+      - name: Tạo icon và splash
+        run: npx capacitor-assets generate --android --iconBackgroundColor '#D4FF4F' --splashBackgroundColor '#D4FF4F' --splashBackgroundColorDark '#121316'
+        continue-on-error: true
+
+      - name: Đồng bộ web vào Android
+        run: npx cap sync android
+
+      - name: Build APK debug
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ZK-HEALTH-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
